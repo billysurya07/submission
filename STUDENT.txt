@@ -3,7 +3,7 @@ StoryApp - Advanced Single Page Application
 ===== PROJECT INFORMATION =====
 Student Project: StoryApp - Berbagi Cerita dari Seluruh Dunia
 Date: April 2026
-GitHub Repo: https://github.com/[your-username]/storyapp
+GitHub Repo: https://billysurya07.github.io/submission/
 
 ===== API INFORMATION =====
 API Base URL: https://story-api.dicoding.dev/v1

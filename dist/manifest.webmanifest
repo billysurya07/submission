@@ -2,20 +2,20 @@
   "name": "StoryApp - Cerita dari Seluruh Dunia",
   "short_name": "StoryApp",
   "description": "Aplikasi cerita dengan peta interaktif.",
-  "start_url": "/index.html#/",
-  "scope": "/",
+  "start_url": "./index.html#/",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827",
   "icons": [
     {
-      "src": "/public/images/logo.png",
+      "src": "images/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/public/images/logo.png",
+      "src": "images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
@@ -23,7 +23,7 @@
   ],
   "screenshots": [
     {
-      "src": "/public/images/logo.png",
+      "src": "images/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide"

@@ -519,6 +519,90 @@ footer {
   color: #999;
 }
 
+.story-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.story-actions button {
+  border: none;
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition:
+    background-color 200ms,
+    border-color 200ms,
+    color 200ms;
+}
+
+.story-actions button:hover,
+.story-actions button:focus {
+  background-color: #eef2ff;
+  border-color: #667eea;
+  color: #1e293b;
+}
+
+.favorite-story-btn.active {
+  background-color: #667eea;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.favorite-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background-color: #fbfbff;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+}
+
+.favorite-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.favorite-card-content {
+  flex: 1;
+}
+
+.favorite-card h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.favorite-card button {
+  width: 100%;
+  max-width: 140px;
+  border: none;
+  background-color: #ef4444;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+.favorite-card button:hover,
+.favorite-card button:focus {
+  background-color: #dc2626;
+}
+
 .map-section {
   background: white;
   border-radius: 8px;

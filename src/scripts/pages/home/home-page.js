@@ -13,8 +13,11 @@ import {
 
 import {
   idbGetAllStories,
-  filterStories,
   idbDeleteStory,
+  idbPutFavoriteStory,
+  idbGetAllFavoriteStories,
+  idbDeleteFavoriteStory,
+  filterStories,
 } from "../../utils/idb";
 
 class HomeViewModel extends ViewModel {
@@ -63,15 +66,17 @@ class HomePresenter extends PagePresenter {
 
       const response = await getAllStories();
       const list = response.listStory || [];
-      this.viewModel.setStories(list);
+      const normalized = list.map((story) => ({
+        ...story,
+        id: story.id || `${story.lat}-${story.lon}-${story.createdAt || ""}`,
+      }));
+      this.viewModel.setStories(normalized);
 
       // Sync cache
       try {
-        for (const s of list) {
-          // idb requires id
-          const id = s.id || `${s.lat}-${s.lon}-${s.createdAt || ""}`;
+        for (const s of normalized) {
           await import("../../utils/idb").then(({ idbPutStory }) =>
-            idbPutStory({ ...s, id }),
+            idbPutStory(s),
           );
         }
       } catch (_) {
@@ -101,6 +106,7 @@ export default class HomePage {
     this.presenter.setView(this);
     this.map = null;
     this.markers = {};
+    this.favoriteIds = new Set();
     this.tileLayerControl = null;
   }
 
@@ -178,6 +184,7 @@ export default class HomePage {
     this.setupPushToggle();
 
     await this.presenter.loadStories();
+    await this.loadFavoriteIds();
 
     // Initialize map
     this.initializeMap();
@@ -286,6 +293,33 @@ export default class HomePage {
     }
   }
 
+  async loadFavoriteIds() {
+    try {
+      const favorites = await idbGetAllFavoriteStories();
+      this.favoriteIds = new Set(favorites.map((story) => String(story.id)));
+    } catch (_) {
+      this.favoriteIds = new Set();
+    }
+  }
+
+  async toggleFavoriteStory(id) {
+    const story = this.viewModel.stories.find(
+      (s) => String(s.id) === String(id),
+    );
+    if (!story) return;
+
+    if (this.favoriteIds.has(String(id))) {
+      await idbDeleteFavoriteStory(id);
+      this.favoriteIds.delete(String(id));
+    } else {
+      await idbPutFavoriteStory(story);
+      this.favoriteIds.add(String(id));
+    }
+
+    this.renderStories();
+    this.setupStoriesInteractivity();
+  }
+
   renderStories() {
     const storiesList = document.querySelector("#stories-list");
     if (!storiesList) return;
@@ -301,10 +335,16 @@ export default class HomePage {
         : this.viewModel.stories;
 
     const html = storiesToDisplay
-      .map(
-        (story) => `
+      .map((story) => {
+        const isFavorite = this.favoriteIds.has(String(story.id));
+        return `
         <article class="story-card" data-id="${story.id || ""}" data-lat="${story.lat}" data-lon="${story.lon}">
-          <button class="delete-story-btn" type="button" aria-label="Hapus cerita" title="Hapus">🗑️</button>
+          <div class="story-actions">
+            <button class="favorite-story-btn ${isFavorite ? "active" : ""}" type="button" aria-label="${isFavorite ? "Hapus favorit" : "Simpan favorit"}" title="${isFavorite ? "Hapus favorit" : "Simpan favorit"}">
+              ${isFavorite ? "★ Favorit" : "☆ Favorit"}
+            </button>
+            <button class="delete-story-btn" type="button" aria-label="Hapus cerita" title="Hapus">🗑️</button>
+          </div>
           <img
             src="${story.photoUrl}"
             alt="Foto dari ${this.escapeHtml(story.name)}"
@@ -316,8 +356,8 @@ export default class HomePage {
             <span class="story-date">${new Date(story.createdAt).toLocaleDateString("id-ID")}</span>
           </div>
         </article>
-      `,
-      )
+      `;
+      })
       .join("");
 
     storiesList.innerHTML = html;
@@ -413,6 +453,20 @@ export default class HomePage {
           this.renderStories();
 
           // TODO: enqueue delete sync when backend endpoint is available
+        });
+      });
+
+    document
+      .querySelectorAll(".story-card .favorite-story-btn")
+      .forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const card = btn.closest(".story-card");
+          const id = card?.dataset?.id;
+          if (!id) return;
+
+          await this.toggleFavoriteStory(id);
         });
       });
   }

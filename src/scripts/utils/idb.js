@@ -1,10 +1,11 @@
 // Lightweight IndexedDB helper (no external deps)
 
 const DB_NAME = "storyapp-db";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const STORES = {
   STORIES: "stories",
+  FAVORITES: "favorites",
   QUEUE: "sync-queue",
 };
 
@@ -29,6 +30,10 @@ function openDB() {
           keyPath: "queueId",
           autoIncrement: true,
         });
+      }
+
+      if (!db.objectStoreNames.contains(STORES.FAVORITES)) {
+        db.createObjectStore(STORES.FAVORITES, { keyPath: "id" });
       }
     };
 
@@ -79,6 +84,37 @@ export async function idbDeleteStory(id) {
 export async function idbClearAllStories() {
   const db = await openDB();
   const store = tx(db, STORES.STORIES, "readwrite");
+  await promisifyRequest(store.clear());
+  db.close();
+}
+
+export async function idbPutFavoriteStory(story) {
+  const db = await openDB();
+  const store = tx(db, STORES.FAVORITES, "readwrite");
+  await promisifyRequest(store.put(story));
+  db.close();
+  return story;
+}
+
+export async function idbGetAllFavoriteStories() {
+  const db = await openDB();
+  const store = tx(db, STORES.FAVORITES, "readonly");
+  const request = store.getAll();
+  const result = await promisifyRequest(request);
+  db.close();
+  return result || [];
+}
+
+export async function idbDeleteFavoriteStory(id) {
+  const db = await openDB();
+  const store = tx(db, STORES.FAVORITES, "readwrite");
+  await promisifyRequest(store.delete(id));
+  db.close();
+}
+
+export async function idbClearAllFavoriteStories() {
+  const db = await openDB();
+  const store = tx(db, STORES.FAVORITES, "readwrite");
   await promisifyRequest(store.clear());
   db.close();
 }

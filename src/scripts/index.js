@@ -9,7 +9,9 @@ async function initPWA() {
   if (!("serviceWorker" in navigator)) return;
 
   try {
-    const registration = await navigator.serviceWorker.register("/sw.js");
+    const registration = await navigator.serviceWorker.register(
+      `${import.meta.env.BASE_URL}sw.js`,
+    );
 
     // If user previously enabled push, ensure subscription exists
     await ensureSubscribedIfEnabled();

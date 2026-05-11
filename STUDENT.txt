@@ -1,0 +1,210 @@
+StoryApp - Advanced Single Page Application
+
+===== PROJECT INFORMATION =====
+Student Project: StoryApp - Berbagi Cerita dari Seluruh Dunia
+Date: April 2026
+GitHub Repo: https://github.com/[your-username]/storyapp
+
+===== API INFORMATION =====
+API Base URL: https://story-api.dicoding.dev/v1
+API Documentation: https://story-api.dicoding.dev/v1
+
+API Key Required: No
+Authentication: Token-based (Bearer Token in Authorization header)
+Endpoints Used:
+- POST /register - User registration
+- POST /login - User login
+- GET /stories - Get all stories (paginated)
+- POST /stories - Add new story (multipart form data)
+
+===== MAP SERVICE INFORMATION =====
+Map Library: Leaflet.js (https://leafletjs.com/)
+Tile Providers:
+1. OpenStreetMap (Default)
+   - URL: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+   - Attribution: © OpenStreetMap contributors
+   - API Key Required: No
+
+2. Satellite/Imagery (Esri World Imagery)
+   - URL: https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+   - Attribution: Tiles © Esri
+   - API Key Required: No
+
+===== TECHNOLOGY STACK =====
+Frontend Framework: Vanilla JavaScript (ES6+)
+Build Tool: Vite
+Map Library: Leaflet.js v1.9.4
+CSS: Custom (Responsive Design)
+Storage: Browser Local Storage
+
+===== FEATURES IMPLEMENTED & SCORING =====
+
+✓ CRITERIA 1: SINGLE PAGE APPLICATION & PAGE TRANSITIONS - ADVANCED (+4pts)
+  Architecture:
+  - MVP (Model-View-Presenter) pattern implementation
+  - Page classes with render() and afterRender() methods
+  - Custom page transitions with fade animation
+  
+  Pages Implemented:
+  - Login page (/login)
+  - Register page (/register)
+  - Home page with map (/)
+  - Add Story page (/add-story)
+  - About page (/about)
+  
+  Features:
+  - Hash routing without page reloads
+  - Smooth fade in/out transitions between pages
+  - Authentication state management
+  - Navigation drawer with close button on mobile
+  - Responsive navigation for mobile/tablet/desktop
+
+✓ CRITERIA 2: MAP DATA DISPLAY - ADVANCED (+4pts)
+  Basic Features:
+  - Display stories from Story API (Images + 3+ text fields)
+  - Interactive map with markers and popups
+  
+  Interactive Features:
+  - Filter stories by location with "Semua" button
+  - Highlight marker when clicking story in list
+  - Synchronization between list and map (pan/zoom)
+  - Scroll story list while maintaining map interaction
+  
+  Advanced Features:
+  - Multiple tile layers (OpenStreetMap + Satellite)
+  - Layer control switch in top-right corner
+  - Automatic bounds fitting when loading markers
+
+✓ CRITERIA 3: ADD NEW DATA FORM - ADVANCED (+4pts)
+  Basic Features:
+  - Form with name, description, image, location fields
+  - File upload for images
+  - Location selection via map click
+  - Multipart form data submission to API
+  
+  Enhanced Features:
+  - Input field validation
+  - Inline error messages for invalid inputs
+  - Success/error toast notifications
+  - Loading state on submit button
+  
+  Advanced Features:
+  - Camera option (📷) for direct photo capture
+  - Video media stream handling
+  - Proper cleanup of media streams after use
+  - Photo preview for both uploaded and captured images
+  - DataTransfer API for file input manipulation
+
+✓ CRITERIA 4: ACCESSIBILITY - ADVANCED (+4pts)
+  Basic Features:
+  - Alternative text on all images (alt="" for decorative)
+  - Semantic HTML (header, nav, main, footer, article, section, aside)
+  - Labels on all input fields
+  
+  Enhanced Features:
+  - Responsive design at 375px, 768px, 1024px+ breakpoints
+  - No overlapping elements at any breakpoint
+  - Proper spacing and readability on all sizes
+  
+  Advanced Features:
+  - Skip-to-content link (accessible from keyboard)
+  - Full keyboard navigation (Tab through all interactive elements)
+  - Focus management with visible indicators (3px outline)
+  - ARIA labels and roles for dynamic content
+  - Role="main", "banner", "contentinfo", "navigation"
+  - aria-label for interactive elements
+  - aria-pressed for buttons
+  - aria-busy for loading states
+  - aria-describedby for error messages
+  - Escape key closes modals/drawers
+  - Prefers-reduced-motion media query support
+
+===== RESPONSIVE BREAKPOINTS =====
+Mobile:        375px (small phones)
+Tablet:        768px (tablets)
+Desktop:      1024px (laptops and above)
+Extra Large:  1200px (large monitors)
+
+Layout adjustments by breakpoint:
+- Navigation drawer: Fixed mobile, inline desktop
+- Stories sidebar: Stack on mobile, side-by-side on desktop
+- Forms: Full width on mobile, centered with max-width on desktop
+- Map height: 300px→450px→500px→600px as viewport grows
+
+===== AUTHENTICATION =====
+Registration & Login Flow:
+1. User can register with name, email, password
+2. Server returns token and user info
+3. Token stored in localStorage
+4. Authenticated users can see home page and add stories
+5. Logout available in navigation menu
+
+Example test credentials (from API):
+- Email: dicoding@dicoding.com
+- Password: 123456
+
+(Test with real API or create new account)
+
+===== PROJECT STRUCTURE =====
+/src
+  /scripts
+    /pages
+      /auth
+        register-page.js  - User registration
+        login-page.js     - User login
+      /story
+        add-story-page.js - Add new story with map
+      /home
+        home-page.js      - Home with map and story list
+      /about
+        about-page.js     - About page
+      app.js              - Main app controller and navigation
+    /routes
+      routes.js           - Route definitions and matching
+      url-parser.js       - Hash routing utilities
+    /data
+      api.js              - API calls for stories and auth
+    /utils
+      view-model.js       - Base ViewModel class
+      page-presenter.js   - Base PagePresenter class
+      storage.js          - Auth token management
+    /config.js            - API URLs and map defaults
+    index.js              - App initialization
+  /styles
+    styles.css            - Global + component + responsive styles
+  index.html              - Main HTML with semantic structure
+  /public
+    /images               - Static images
+
+===== INSTRUCTIONS FOR DEVELOPMENT =====
+1. Install dependencies:
+   npm install
+
+2. Start development server:
+   npm run dev
+   
+3. Build for production:
+   npm run build
+
+4. Preview production build:
+   npm run preview
+
+===== TESTING NOTES =====
+- Test on mobile (375px), tablet (768px), desktop (1024px+)
+- Check all keyboard navigation paths
+- Verify camera functionality (HTTPS required in production)
+- Test form validation with invalid inputs
+- Verify markers display on map with story data
+- Test layer switching on map
+- Check authentication flow (login/register/logout)
+- Verify all images have alt text (inspect with dev tools)
+
+===== KEY NOTES =====
+- Responsive design works at all specified breakpoints
+- No API keys needed for map provider (OpenStreetMap)
+- Camera requires HTTPS in production (works on localhost:5173)
+- All page transitions have smooth fade animations
+- Mobile drawer closes on navigation
+- Keyboard Escape key closes modals/drawer
+- Form validation provides inline error feedback
+- Map automatically centers on markers when filtered

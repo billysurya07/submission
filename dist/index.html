@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Berbagi cerita dari seluruh dunia dengan peta interaktif"
+    />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>StoryApp - Berbagi Cerita dari Seluruh Dunia</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    />
+
+    <!-- Leaflet JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <script type="module" crossorigin src="/assets/index-CO8EnoPG.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BK8U6d99.css">
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
+    <header role="banner">
+      <div class="main-header container">
+        <a class="brand-name" href="#/">StoryApp</a>
+
+        <nav
+          id="navigation-drawer"
+          class="navigation-drawer"
+          role="navigation"
+          aria-label="Navigasi utama"
+        >
+          <button
+            id="close-drawer-btn"
+            class="close-drawer-btn"
+            aria-label="Tutup menu"
+          >
+            ✕
+          </button>
+          <ul id="nav-list" class="nav-list">
+            <li><a href="#/">Beranda</a></li>
+            <li><a href="#/about">Tentang</a></li>
+            <li id="logout-item" style="display: none">
+              <button id="logout-btn" class="logout-btn">Keluar</button>
+            </li>
+          </ul>
+        </nav>
+
+        <button
+          id="drawer-button"
+          class="drawer-button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <main
+      id="main-content"
+      class="main-content"
+      role="main"
+      tabindex="-1"
+    ></main>
+
+    <footer role="contentinfo">
+      <div class="footer-content container">
+        <p>&copy; 2026 StoryApp. Semua hak dilindungi.</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import CONFIG from "../config";
+import { subscribeNotification } from "../data/api";
 
 const VAPID_PUBLIC_KEY =
   "BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk";
@@ -53,20 +53,23 @@ export async function requestPermissionAndSubscribe() {
 
   const registration = await navigator.serviceWorker.ready;
 
-  const existing = await registration.pushManager.getSubscription();
-  if (existing) {
-    storeSubscription(existing);
-    setPushEnabled(true);
-    return existing;
+  let subscription = await registration.pushManager.getSubscription();
+  if (!subscription) {
+    subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
   }
-
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-  });
 
   storeSubscription(subscription);
   setPushEnabled(true);
+
+  const subscriptionData =
+    typeof subscription.toJSON === "function"
+      ? subscription.toJSON()
+      : subscription;
+  await subscribeNotification(subscriptionData);
+
   return subscription;
 }
 
@@ -89,9 +92,14 @@ export async function ensureSubscribedIfEnabled() {
   if (!enabled) return null;
 
   const registration = await navigator.serviceWorker.ready;
-  const subscription = await registration.pushManager.getSubscription();
+  let subscription = await registration.pushManager.getSubscription();
   if (subscription) {
     storeSubscription(subscription);
+    const subscriptionData =
+      typeof subscription.toJSON === "function"
+        ? subscription.toJSON()
+        : subscription;
+    await subscribeNotification(subscriptionData);
     return subscription;
   }
 

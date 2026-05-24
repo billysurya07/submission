@@ -80,6 +80,7 @@ export default class FavoritesPage {
       <main class="favorites-main">
         <section class="favorites-section container">
           <h1>Cerita Favorit</h1>
+          <h2 class="favorites-subtitle">Koleksi cerita favorit Anda</h2>
           ${
             !isAuthenticated()
               ? `

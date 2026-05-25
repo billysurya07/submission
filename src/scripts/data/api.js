@@ -105,15 +105,49 @@ export async function subscribeNotification(subscription) {
     headers.Authorization = `Bearer ${token}`;
   }
 
+  const payload = {
+    endpoint: subscription.endpoint,
+    keys: {
+      p256dh: subscription.keys?.p256dh || "",
+      auth: subscription.keys?.auth || "",
+    },
+  };
+
   const response = await fetch(ENDPOINTS.NOTIFICATIONS_SUBSCRIBE, {
     method: "POST",
     headers,
-    body: JSON.stringify(subscription),
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
     throw new Error(error?.message || "Failed to subscribe for notifications");
+  }
+
+  return await response.json();
+}
+
+export async function unsubscribeNotification(endpoint) {
+  const token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(ENDPOINTS.NOTIFICATIONS_SUBSCRIBE, {
+    method: "DELETE",
+    headers,
+    body: JSON.stringify({ endpoint }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(
+      error?.message || "Failed to unsubscribe from notifications",
+    );
   }
 
   return await response.json();

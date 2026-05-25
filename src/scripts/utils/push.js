@@ -1,4 +1,4 @@
-import { subscribeNotification } from "../data/api";
+import { subscribeNotification, unsubscribeNotification } from "../data/api";
 
 const VAPID_PUBLIC_KEY =
   "BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk";
@@ -33,6 +33,21 @@ export function getStoredSubscription() {
   return raw ? JSON.parse(raw) : null;
 }
 
+export function normalizeSubscription(subscription) {
+  const payload =
+    typeof subscription?.toJSON === "function"
+      ? subscription.toJSON()
+      : subscription;
+
+  return {
+    endpoint: payload.endpoint,
+    keys: {
+      p256dh: payload.keys?.p256dh || "",
+      auth: payload.keys?.auth || "",
+    },
+  };
+}
+
 export function storeSubscription(sub) {
   localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(sub));
 }
@@ -61,14 +76,11 @@ export async function requestPermissionAndSubscribe() {
     });
   }
 
-  storeSubscription(subscription);
+  const subscriptionPayload = normalizeSubscription(subscription);
+  storeSubscription(subscriptionPayload);
   setPushEnabled(true);
 
-  const subscriptionData =
-    typeof subscription.toJSON === "function"
-      ? subscription.toJSON()
-      : subscription;
-  await subscribeNotification(subscriptionData);
+  await subscribeNotification(subscriptionPayload);
 
   return subscription;
 }
@@ -79,6 +91,7 @@ export async function unsubscribe() {
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registration.pushManager.getSubscription();
   if (subscription) {
+    await unsubscribeNotification(subscription.endpoint);
     await subscription.unsubscribe();
   }
   clearStoredSubscription();
@@ -94,12 +107,9 @@ export async function ensureSubscribedIfEnabled() {
   const registration = await navigator.serviceWorker.ready;
   let subscription = await registration.pushManager.getSubscription();
   if (subscription) {
-    storeSubscription(subscription);
-    const subscriptionData =
-      typeof subscription.toJSON === "function"
-        ? subscription.toJSON()
-        : subscription;
-    await subscribeNotification(subscriptionData);
+    const subscriptionPayload = normalizeSubscription(subscription);
+    storeSubscription(subscriptionPayload);
+    await subscribeNotification(subscriptionPayload);
     return subscription;
   }
 
